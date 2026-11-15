@@ -35,6 +35,8 @@ for day in pd.date_range("2026-06-03", "2026-09-30"):
 
 res = pd.DataFrame(rows)
 res["alert"] = (res["level"] == "High") & (res["level"].shift(1) != "High")
+res.to_csv("risk_results_2026.csv", index=False)
+
 print("Alerts sent:", int(res["alert"].sum()))
 print(res["level"].value_counts())
 
