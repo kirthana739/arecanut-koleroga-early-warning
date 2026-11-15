@@ -34,7 +34,8 @@ for day in pd.date_range("2026-06-03", "2026-09-30"):
     rows.append(result)
 
 res = pd.DataFrame(rows)
-res.to_csv("risk_results_2026.csv", index=False)
+res["alert"] = (res["level"] == "High") & (res["level"].shift(1) != "High")
+print("Alerts sent:", int(res["alert"].sum()))
 print(res["level"].value_counts())
 
 colors = {"Low": "#97C459", "Medium": "#EF9F27", "High": "#E24B4A"}
@@ -42,7 +43,7 @@ fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(11, 6), sharex=True)
 ax1.bar(res["date"], res["rain_mm"], color="#378ADD")
 ax1.set_ylabel("Rain in last 48 h (mm)")
 ax2.bar(res["date"], res["score"], color=[colors[l] for l in res["level"]])
-ax2.set_ylabel("Risk score (0-5)")
+ax2.set_ylabel("Risk score (0-6)")
 ax2.set_xlabel("Date (monsoon 2026)")
 fig.suptitle("Koleroga risk score vs rainfall, Sullya, June-Sept 2026")
 plt.tight_layout()
