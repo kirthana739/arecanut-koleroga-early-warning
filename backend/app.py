@@ -2,7 +2,7 @@ import sqlite3
 from datetime import datetime, timedelta
 
 import pandas as pd
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_from_directory
 
 from alerts import send_alert
 from risk import WINDOW_HOURS, calculate_risk, should_alert
@@ -157,6 +157,11 @@ def list_readings():
     return jsonify([dict(r) for r in rows])
 
 
+@app.get("/dashboard")
+def dashboard():
+    return send_from_directory("../dashboard", "index.html")
+
+
 @app.get("/risk")
 def current_risk():
     return jsonify(compute_risk())
@@ -166,3 +171,4 @@ init_db()
 
 if __name__ == "__main__":
     app.run(debug=True)
+
