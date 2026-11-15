@@ -32,7 +32,7 @@ def init_db():
             time TEXT NOT NULL,
             temperature REAL NOT NULL,
             humidity REAL NOT NULL,
-            rain_mm REAL NOT NULL
+            rain_mm REAL NOT NULL, UNIQUE(device_id, time)
         )""",
         commit=True,
     )
@@ -136,7 +136,7 @@ def add_reading():
 
     device_id = str(data.get("device_id", "device-1"))
     query(
-        "INSERT INTO readings (device_id, time, temperature, humidity, rain_mm) "
+        "INSERT OR IGNORE INTO readings (device_id, time, temperature, humidity, rain_mm) "
         "VALUES (?, ?, ?, ?, ?)",
         (device_id, time, temperature, humidity, rain_mm),
         commit=True,
@@ -171,4 +171,6 @@ init_db()
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+
 
